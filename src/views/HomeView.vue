@@ -2,5 +2,7 @@
 </script>
 
 <template>
-    <h1 class="text-center">Home</h1>
+    <div class="mt-14">
+        <h1 class="text-center">Home</h1>
+    </div>
 </template>
