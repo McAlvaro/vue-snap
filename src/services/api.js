@@ -39,4 +39,40 @@ const getCollections = async () => {
     return newData;
 };
 
-export const api = { getRandomPhotos, getCollections }
+const getPhotos = async () => {
+
+    const { data } = await unsplahApi.get('/photos', { params: { per_page: '16' } });
+
+    const newData = data.map(item => ({
+        description: item.description,
+        urls: {
+            regular: item.urls.regular,
+            full: item.urls.full
+        },
+        links: {
+            download: item.links.download,
+            html: item.links.html
+        },
+        likes: item.likes,
+        user: {
+            name: item.user.name,
+            profile_image: {
+                small: item.user.profile_image.small
+            }
+        }
+    }));
+
+    console.log('Data Photos: ', newData);
+
+    return chunkArrayData(newData, 4);
+};
+
+const chunkArrayData = (data, size) => {
+    const chunkedArray = [];
+    for (let i = 0; i < data.length; i += size) {
+        chunkedArray.push(data.slice(i, i + size));
+    }
+    return chunkedArray;
+};
+
+export const api = { getRandomPhotos, getCollections, getPhotos }
