@@ -6,12 +6,12 @@ defineProps({ photos: Array })
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div v-for="(row, index) in photos" class="grid gap-4" :key="index">
             <div v-for="(photo, i) in row" :key="i" class="relative">
-                <img class="h-full max-w-full rounded-lg" :src="photo.urls.regular" alt="">
+                <img class="h-full max-w-full rounded-lg" :src="photo.urls.regular" alt="" loading="lazy">
                 <div
                     class="absolute inset-0 flex items-end justify-start opacity-0 hover:opacity-100 transition-opacity duration-300 bg-gradient-to-b from-transparent to-gray-900">
                     <div class="w-full flex flex-row items-center justify-between px-4 py-1 ">
                         <div class="flex flex-row items-center">
-                            <img :src="photo.user.profile_image.small" class="rounded-full" alt="">
+                            <img :src="photo.user.profile_image.small" class="rounded-full" alt="" loading="lazy">
                             <span class="ml-3 text-white">{{photo.user.name}}</span>
                         </div>
                         <div class="flex flex-row items-center">
