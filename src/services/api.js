@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { ref } from 'vue';
+
+const photo_page = ref(1);
+const loading = ref(false);
 
 const unsplahApi = axios.create({
     baseURL: 'https://api.unsplash.com',
@@ -41,7 +45,9 @@ const getCollections = async () => {
 
 const getPhotos = async () => {
 
-    const { data } = await unsplahApi.get('/photos', { params: { per_page: '16' } });
+    loading.value = true;
+
+    const { data } = await unsplahApi.get('/photos', { params: { per_page: '16', page: photo_page.value } });
 
     const newData = data.map(item => ({
         description: item.description,
@@ -64,6 +70,9 @@ const getPhotos = async () => {
 
     console.log('Data Photos: ', newData);
 
+    photo_page.value++;
+    loading.value = false;
+
     return chunkArrayData(newData, 4);
 };
 
@@ -75,4 +84,4 @@ const chunkArrayData = (data, size) => {
     return chunkedArray;
 };
 
-export const api = { getRandomPhotos, getCollections, getPhotos }
+export const api = { getRandomPhotos, getCollections, getPhotos, loading }
