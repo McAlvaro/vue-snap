@@ -43,11 +43,21 @@ const getCollections = async () => {
     return newData;
 };
 
-const getPhotos = async () => {
+const getPhotos = async (term = null) => {
 
+    console.log('Search by: ', term);
     loading.value = true;
 
-    const { data } = await unsplahApi.get('/photos', { params: { per_page: '16', page: photo_page.value } });
+    let data = [];
+
+    if (term === null) {
+
+        data = await listPhotos();
+
+    } else {
+        data = await searchPhotosByTerm(term);
+    }
+
 
     const newData = data.map(item => ({
         description: item.description,
@@ -74,6 +84,24 @@ const getPhotos = async () => {
     loading.value = false;
 
     return chunkArrayData(newData, 4);
+};
+
+const searchPhotosByTerm = async (term) => {
+
+    loading.value = true;
+
+    const { data } = await unsplahApi.get('/search/photos', { params: { per_page: '16', page: photo_page.value, query: term } });
+
+    console.log('seaching result: ', data.results)
+    return data.results;
+
+};
+
+const listPhotos = async () => {
+
+    const { data } = await unsplahApi.get('/photos', { params: { per_page: '16', page: photo_page.value } });
+
+    return data;
 };
 
 const chunkArrayData = (data, size) => {
