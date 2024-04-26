@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const photo_page = ref(1);
+const collection_page = ref(1);
 const loading = ref(false);
 
 const unsplahApi = axios.create({
@@ -86,6 +87,32 @@ const getPhotos = async (term = null) => {
     return chunkArrayData(newData, 4);
 };
 
+const getListCollections = async (term = null) => {
+
+    let data = [];
+
+    if (term === null) {
+
+        data = await listCollections();
+
+    } else {
+        data = await searchCollectionByTerm(term);
+    }
+
+    const newData = data.map(item => ({
+        title: item.title,
+        total_photos: item.total_photos,
+        links: {
+            html: item.links.html
+        },
+        preview_photos: item.preview_photos.map(photo => photo.urls.regular)
+    }));
+
+    collection_page.value++;
+
+    return newData;
+};
+
 const searchPhotosByTerm = async (term) => {
 
     loading.value = true;
@@ -104,6 +131,21 @@ const listPhotos = async () => {
     return data;
 };
 
+const listCollections = async () => {
+    const { data } = await unsplahApi.get('/collections', { params: { per_page: '16', page: collection_page.value } });
+
+    console.log('seaching collections result: ', data);
+
+    return data;
+};
+
+const searchCollectionByTerm = async (term) => {
+
+    const { data } = await unsplahApi.get('/search/collections', { params: { per_page: '16', page: collection_page.value, query: term } });
+
+    return data.results;
+};
+
 const chunkArrayData = (data, size) => {
     const chunkedArray = [];
     for (let i = 0; i < data.length; i += size) {
@@ -112,4 +154,4 @@ const chunkArrayData = (data, size) => {
     return chunkedArray;
 };
 
-export const api = { getRandomPhotos, getCollections, getPhotos, loading }
+export const api = { getRandomPhotos, getCollections, getPhotos, loading, getListCollections }
