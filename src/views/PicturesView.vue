@@ -1,5 +1,6 @@
 <script setup>
 import ImageGallery from '@/components/ImageGallery.vue';
+import Loading from '@/components/Loading.vue';
 import PictureCover from '@/components/PictureCover.vue';
 import Search from '@/components/Search.vue';
 import { api } from '@/services/api';
@@ -21,6 +22,7 @@ const loadMore = async () => {
 
 const searchBy = async (term) => {
     search.value = term;
+    photos.value = [];
     photos.value = await api.getPhotos(term);
 };
 
@@ -31,6 +33,9 @@ const searchBy = async (term) => {
             <PictureCover :cover_image="image_url" />
             <div class="w-full">
                 <Search @search-by="searchBy" />
+            </div>
+            <div>
+                <Loading v-if="api.loading.value" />
             </div>
             <ImageGallery :photos="photos" />
             <div>

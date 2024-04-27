@@ -89,6 +89,8 @@ const getPhotos = async (term = null) => {
 
 const getListCollections = async (term = null) => {
 
+    loading.value = true;
+
     let data = [];
 
     if (term === null) {
@@ -109,6 +111,8 @@ const getListCollections = async (term = null) => {
     }));
 
     collection_page.value++;
+
+    loading.value = false;
 
     return newData;
 };

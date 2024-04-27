@@ -1,5 +1,6 @@
 <script setup>
 import CollectionGallery from '@/components/CollectionGallery.vue';
+import Loading from '@/components/Loading.vue';
 import Search from '@/components/Search.vue';
 import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
@@ -9,6 +10,7 @@ const search = ref(null);
 
 const searchBy = async (term) => {
     search.value = term;
+    collections.value = [];
     collections.value = await api.getListCollections(term);
 };
 
@@ -25,6 +27,9 @@ onMounted(async () => {
         <div class="flex flex-col space-y-6">
             <div class="w-full">
                 <Search @search-by="searchBy" />
+            </div>
+            <div>
+                <Loading v-if="api.loading.value" />
             </div>
             <CollectionGallery :collections="collections" />
             <div>
